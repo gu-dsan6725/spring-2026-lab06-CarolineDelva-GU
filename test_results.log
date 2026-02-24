@@ -1,0 +1,77 @@
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+2026-02-24 03:35:50,191,p3905,{test_client.py:55},INFO,Connecting to MCP server at http://127.0.0.1:8765/mcp
+2026-02-24 03:35:50,191,p3905,{test_client.py:56},INFO,Make sure your server is running: uv run python server.py
+2026-02-24 03:35:50,314,p3905,{_client.py:1740},INFO,HTTP Request: POST http://127.0.0.1:8765/mcp "HTTP/1.1 200 OK"
+2026-02-24 03:35:50,314,p3905,{streamable_http.py:181},INFO,Received session ID: e416f77fe93940418d79524baca0b80d
+2026-02-24 03:35:50,315,p3905,{streamable_http.py:193},INFO,Negotiated protocol version: 2025-11-25
+2026-02-24 03:35:50,317,p3905,{test_client.py:63},INFO,Session initialized successfully
+2026-02-24 03:35:50,317,p3905,{test_client.py:33},INFO,
+2026-02-24 03:35:50,317,p3905,{test_client.py:34},INFO,============================================================
+2026-02-24 03:35:50,317,p3905,{test_client.py:35},INFO,TESTING RESOURCES
+2026-02-24 03:35:50,317,p3905,{test_client.py:36},INFO,============================================================
+2026-02-24 03:35:50,323,p3905,{_client.py:1740},INFO,HTTP Request: POST http://127.0.0.1:8765/mcp "HTTP/1.1 202 Accepted"
+2026-02-24 03:35:50,324,p3905,{_client.py:1740},INFO,HTTP Request: GET http://127.0.0.1:8765/mcp "HTTP/1.1 200 OK"
+2026-02-24 03:35:50,327,p3905,{_client.py:1740},INFO,HTTP Request: POST http://127.0.0.1:8765/mcp "HTTP/1.1 200 OK"
+2026-02-24 03:35:50,331,p3905,{test_client.py:73},INFO,Available resources: ['data://schema', 'data://countries']
+2026-02-24 03:35:50,331,p3905,{test_client.py:76},INFO,
+[TEST] data://schema
+2026-02-24 03:35:50,337,p3905,{_client.py:1740},INFO,HTTP Request: POST http://127.0.0.1:8765/mcp "HTTP/1.1 200 OK"
+2026-02-24 03:35:50,347,p3905,{test_client.py:80},INFO,  Result: {
+  "countryiso3code": "String",
+  "country": "String",
+  "indicator_id": "String",
+  "indicator_name": "String",
+  "year": "Int64",
+  "value": "Float64"
+}
+2026-02-24 03:35:50,348,p3905,{test_client.py:83},INFO,  Status: PASS
+2026-02-24 03:35:50,348,p3905,{test_client.py:89},INFO,
+[TEST] data://countries
+2026-02-24 03:35:50,355,p3905,{_client.py:1740},INFO,HTTP Request: POST http://127.0.0.1:8765/mcp "HTTP/1.1 200 OK"
+2026-02-24 03:35:50,362,p3905,{test_client.py:95},INFO,  Result: [{"countryiso3code":"AFG","country":"Afghanistan"},{"countryiso3code":"AFE","country":"Africa Eastern and Southern"},{"countryiso3code":"AFW","country":"Africa Western and Central"},{"countryiso3code"...
+2026-02-24 03:35:50,363,p3905,{test_client.py:100},INFO,  Found 261 countries
+2026-02-24 03:35:50,363,p3905,{test_client.py:101},INFO,  Status: PASS
+2026-02-24 03:35:50,363,p3905,{test_client.py:107},INFO,
+[TEST] data://indicators/USA
+2026-02-24 03:35:50,367,p3905,{_client.py:1740},INFO,HTTP Request: POST http://127.0.0.1:8765/mcp "HTTP/1.1 200 OK"
+2026-02-24 03:35:50,373,p3905,{test_client.py:113},INFO,  Result: [{"countryiso3code":"USA","country":"United States","indicator_id":"NY.GDP.PCAP.CD","indicator_name":"GDP per capita (current US$)","year":2018,"value":62499.8744390068},{"countryiso3code":"USA","coun...
+2026-02-24 03:35:50,373,p3905,{test_client.py:116},INFO,  Found 18 records
+2026-02-24 03:35:50,373,p3905,{test_client.py:117},INFO,  Status: PASS
+2026-02-24 03:35:50,374,p3905,{test_client.py:33},INFO,
+2026-02-24 03:35:50,374,p3905,{test_client.py:34},INFO,============================================================
+2026-02-24 03:35:50,374,p3905,{test_client.py:35},INFO,TESTING TOOLS
+2026-02-24 03:35:50,374,p3905,{test_client.py:36},INFO,============================================================
+2026-02-24 03:35:50,378,p3905,{_client.py:1740},INFO,HTTP Request: POST http://127.0.0.1:8765/mcp "HTTP/1.1 200 OK"
+2026-02-24 03:35:50,381,p3905,{test_client.py:130},INFO,Available tools: ['get_country_info', 'get_live_indicator', 'compare_countries']
+2026-02-24 03:35:50,381,p3905,{test_client.py:133},INFO,
+[TEST] get_country_info('USA')
+2026-02-24 03:35:50,385,p3905,{_client.py:1740},INFO,HTTP Request: POST http://127.0.0.1:8765/mcp "HTTP/1.1 200 OK"
+2026-02-24 03:35:50,493,p3905,{test_client.py:142},INFO,  Result: {
+  "error": "No data found for country code 'USA'"
+}
+2026-02-24 03:35:50,493,p3905,{test_client.py:146},WARNING,  Warning: Response may be missing expected fields
+2026-02-24 03:35:50,493,p3905,{test_client.py:147},INFO,  Status: PASS
+2026-02-24 03:35:50,493,p3905,{test_client.py:153},INFO,
+[TEST] get_live_indicator('USA', 'NY.GDP.PCAP.CD', 2022)
+2026-02-24 03:35:50,497,p3905,{_client.py:1740},INFO,HTTP Request: POST http://127.0.0.1:8765/mcp "HTTP/1.1 200 OK"
+2026-02-24 03:35:50,625,p3905,{test_client.py:166},INFO,  Result: {
+  "error": "No data available for USA, indicator NY.GDP.PCAP.CD, year 2022"
+}
+2026-02-24 03:35:50,625,p3905,{test_client.py:167},INFO,  Status: PASS
+2026-02-24 03:35:50,625,p3905,{test_client.py:173},INFO,
+[TEST] compare_countries(['USA', 'CHN', 'DEU'], 'SP.POP.TOTL', 2022)
+2026-02-24 03:35:50,630,p3905,{_client.py:1740},INFO,HTTP Request: POST http://127.0.0.1:8765/mcp "HTTP/1.1 200 OK"
+2026-02-24 03:35:51,022,p3905,{test_client.py:186},INFO,  Result: {
+  "country": "USA",
+  "country_name": null,
+  "indicator": "SP.POP.TOTL",
+  "year": 2022,
+  "value": null
+}
+2026-02-24 03:35:51,022,p3905,{test_client.py:191},INFO,  Status: PASS
+2026-02-24 03:35:51,022,p3905,{test_client.py:33},INFO,
+2026-02-24 03:35:51,023,p3905,{test_client.py:34},INFO,============================================================
+2026-02-24 03:35:51,023,p3905,{test_client.py:35},INFO,TEST SUMMARY
+2026-02-24 03:35:51,023,p3905,{test_client.py:36},INFO,============================================================
+2026-02-24 03:35:51,023,p3905,{test_client.py:202},INFO,ALL TESTS PASSED
+2026-02-24 03:35:51,026,p3905,{_client.py:1740},INFO,HTTP Request: DELETE http://127.0.0.1:8765/mcp "HTTP/1.1 200 OK"

@@ -118,7 +118,11 @@ def get_countries() -> str:
     """
     df = _load_data()
     # TODO: Implement - return unique country codes and names as JSON string
-    pass
+    unique = df.select(['countryiso3code', 'country']).unique().sort('country')
+                
+    return unique.write_json()
+
+  
 
 
 @mcp.resource("data://indicators/{country_code}")
@@ -141,7 +145,14 @@ def get_country_indicators(country_code: str) -> str:
     """
     df = _load_data()
     # TODO: Implement - filter by country and return as JSON string
-    pass
+    indicators = df.filter(pl.col("countryiso3code") == country_code) 
+    
+    if indicators.height == 0:
+        return json.dumps({
+            "error": f"No data found for country code '{country_code}'"
+        })
+
+    return indicators.write_json()
 
 
 # =============================================================================
@@ -185,8 +196,30 @@ def get_country_info(country_code: str) -> dict:
     - flag: "🇺🇸"
     """
     logger.info(f"Fetching country info for: {country_code}")
-    # TODO: Implement using _fetch_rest_countries()
-    pass
+    
+    try:
+        data = _fetch_rest_countries(country_code.upper())
+    except Exception as e:
+        return {"error": f"Failed to fetch country data: {str(e)}"}
+    
+    if not data or not isinstance(data, list):
+        return {"error": f"No data found for country code '{country_code}'"}
+
+    country = data[0]
+
+    return {
+        "name": country.get("name", {}).get("common"),
+        "capital": (country.get("capital") or [None])[0],
+        "region": country.get("region"),
+        "subregion": country.get("subregion"),
+        "languages": list((country.get("languages") or {}).values()),
+        "currencies": list((country.get("currencies") or {}).keys()),
+        "population": country.get("population"),
+        "flag": country.get("flag"),
+    }
+
+    
+    
 
 
 @mcp.tool()
@@ -227,7 +260,25 @@ def get_live_indicator(
     """
     logger.info(f"Fetching {indicator} for {country_code} in {year}")
     # TODO: Implement using _fetch_world_bank_indicator()
-    pass
+    try:
+        data = _fetch_world_bank_indicator(country_code.upper(), indicator, year)[1]
+        record = next(
+            r for r in data
+            if str(r.get("date")) == str(year) and r.get("value") is not None
+        )
+    except Exception:
+        return {
+            "error": f"No data available for {country_code}, indicator {indicator}, year {year}"
+        }
+
+    return {
+        "country": country_code.upper(),
+        "country_name": record["country"]["value"],
+        "indicator": indicator,
+        "indicator_name": record["indicator"]["value"],
+        "year": int(record["date"]),
+        "value": record["value"],
+    }
 
 
 @mcp.tool()
@@ -261,7 +312,41 @@ def compare_countries(
     """
     logger.info(f"Comparing {indicator} for countries: {country_codes}")
     # TODO: Implement - call get_live_indicator for each country
-    pass
+    results = []
+
+    for code in country_codes:
+        try:
+            data = get_live_indicator(code, indicator, year)
+
+            # If the tool returned an error, normalize the output
+            if "error" in data:
+                results.append({
+                    "country": code.upper(),
+                    "country_name": None,
+                    "indicator": indicator,
+                    "year": year,
+                    "value": None,
+                })
+            else:
+                results.append({
+                    "country": data["country"],
+                    "country_name": data["country_name"],
+                    "indicator": data["indicator"],
+                    "year": data["year"],
+                    "value": data["value"],
+                })
+
+        except Exception:
+            # Absolute fallback protection
+            results.append({
+                "country": code.upper(),
+                "country_name": None,
+                "indicator": indicator,
+                "year": year,
+                "value": None,
+            })
+
+    return results
 
 
 # =============================================================================
