@@ -375,3 +375,4 @@ if __name__ == "__main__":
     logger.info(f"Connect with MCP Inspector or test client at http://{HOST}:{PORT}/mcp")
     logger.info("Press Ctrl+C to stop")
     mcp.run(transport="streamable-http")
+  
