@@ -118,10 +118,15 @@ def get_countries() -> str:
     """
     df = _load_data()
     # TODO: Implement - return unique country codes and names as JSON string
-    unique = df.select(['countryiso3code', 'country']).unique().sort('country')
-                
+    try:
+        unique = df.select(['countryiso3code', 'country']).unique().sort('country')
+        
+    except:
+        name = df['country'][0]
+        code = df['countryiso3code'][0]
+        logger.error(f"API error for {name} ({code}): {e}")
+        return {"error": f"Country not found: {name}"}
     return unique.write_json()
-
   
 
 
@@ -143,16 +148,23 @@ def get_country_indicators(country_code: str) -> str:
 
     Expected output: JSON array of indicator records for that country
     """
-    df = _load_data()
-    # TODO: Implement - filter by country and return as JSON string
-    indicators = df.filter(pl.col("countryiso3code") == country_code) 
-    
-    if indicators.height == 0:
-        return json.dumps({
-            "error": f"No data found for country code '{country_code}'"
-        })
+    try: 
+        df = _load_data()
+        # TODO: Implement - filter by country and return as JSON string
+        indicators = df.filter(pl.col("countryiso3code") == country_code) 
+        
+        if indicators.height == 0:
+            return json.dumps({
+                "error": f"No data found for country code '{country_code}'"
+            })
+        return indicators.write_json()
+    except httpx.HTTPStatusError as e:
+        logger.error(f"API error for {country_code}: {e}")
+        return json.dumps({"error": f"API request failed for {country_code}"})
 
-    return indicators.write_json()
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+        return json.dumps({"error": "An internal error occurred"})
 
 
 # =============================================================================
@@ -199,14 +211,19 @@ def get_country_info(country_code: str) -> dict:
     
     try:
         data = _fetch_rest_countries(country_code.upper())
+    except httpx.HTTPStatusError as e:
+        logger.error(f"API Error for {country_code}: {e}")
+        return {"error": f"Invalid country code or API failure: {country_code}"}
     except Exception as e:
-        return {"error": f"Failed to fetch country data: {str(e)}"}
+        logger.error(f"Unexpected error: {e}")
+        return {"error": "Failed to fetch country data"}
     
+    # 4. Handle Empty Results
     if not data or not isinstance(data, list):
         return {"error": f"No data found for country code '{country_code}'"}
 
     country = data[0]
-
+    
     return {
         "name": country.get("name", {}).get("common"),
         "capital": (country.get("capital") or [None])[0],
